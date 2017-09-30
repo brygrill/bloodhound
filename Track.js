@@ -1,49 +1,72 @@
 // @flow
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { CheckBox } from 'react-native-elements';
-import { Constants, Location, Permissions } from 'expo';
+import { Location, Permissions } from 'expo';
+
+import GetLocation from './Location';
+import fire from './fire';
+
+const db = fire.database();
+const ref = db.ref('users');
 
 export default class App extends React.Component {
   state = {
-    loading: true,
+    loading: false,
     error: false,
-    tracking: false,
-    trackingAllowed: false,
+    trackingOn: true,
     location: null,
   };
+
+  componentDidMount() {
+    // this.watchLocation(this.props.uid);
+    // Location.watchPositionAsync({}, this.logLocation);
+  }
+
+  getLocation = async uid => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({ error: true });
+    }
+
+    const location = await Location.getCurrentPositionAsync({});
+    ref.child(uid).update({ location });
+    this.setState({ location });
+  };
+
+  logLocation = coords => {
+    console.log('Getting Location!');
+    console.log(coords);
+    ref.child(this.props.uid).update({ location: coords });
+    this.setState({ location: coords });
+  };
+
+  // watchLocation = async uid => {
+  //   const { status } = await Permissions.askAsync(Permissions.LOCATION);
+  //   if (status) {
+  //     this.setState({ trackingAllowed: true });
+  //   }
+
+  //   const location = await Location.watchPositionAsync(
+  //     { timeInterval: 1000 },
+  //     coords => {
+  //       console.log(coords);
+  //       ref.child(uid).update({ location: coords });
+  //       this.setState({ location: coords });
+  //     },
+  //   );
+  // };
 
   props: {
     uid: string,
   };
 
-  trackLocation = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status) {
-      console.log('Tracking Allowed!');
-      this.setState({ trackingAllowed: true });
-    }
-
-    const location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
-  }
-
   render() {
-    console.log(this.state);
-    if (this.state.tracking) {
-      this.trackLocation();
-    } else {
-      console.log('Not Tracking');
-      if (this.state.location) {
-        this.state.location.remove();
-      }
-    }
     return (
       <View style={styles.container}>
-        <CheckBox
-          title="Turn On Tracking"
-          checked={this.state.tracking}
-          onPress={() => this.setState({ tracking: !this.state.tracking })}
+        <Text h1>Tracking Location...</Text>
+        <GetLocation
+          trackingOn={this.state.trackingOn}
+          uid={this.props.uid}
         />
       </View>
     );
