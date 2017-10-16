@@ -1,6 +1,6 @@
 import React from 'react';
 
-import fire from './fire';
+import fire from '../firebase';
 
 import Track from './Track';
 import Login from './Login';

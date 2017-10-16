@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Location, Permissions } from 'expo';
 
-import fire from './fire';
+import fire from '../firebase';
 
 const db = fire.database();
 const ref = db.ref('users');

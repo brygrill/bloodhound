@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
 
-import fire from './fire';
+import fire from '../firebase';
 
 export default class App extends React.Component {
   state = {

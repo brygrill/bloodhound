@@ -2,7 +2,7 @@ import Expo from 'expo';
 import React, { Component } from 'react';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
-import Entry from './Entry';
+import Entry from './components/Entry';
 
 export default class App extends Component {
   state = {

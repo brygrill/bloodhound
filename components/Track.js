@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Location, Permissions } from 'expo';
 
 import GetLocation from './Location';
-import fire from './fire';
+import fire from '../firebase';
 
 const db = fire.database();
 const ref = db.ref('users');
