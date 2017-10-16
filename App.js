@@ -1,6 +1,9 @@
+// @flow
 import Expo from 'expo';
 import React, { Component } from 'react';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+
+import fire from './firebase';
 
 import Entry from './components/Entry';
 
@@ -28,6 +31,6 @@ export default class App extends Component {
 
   render() {
     const { appReady } = this.state;
-    return appReady ? <Entry /> : <Expo.AppLoading />;
+    return appReady ? <Entry fire={fire} /> : <Expo.AppLoading />;
   }
 }

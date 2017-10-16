@@ -1,6 +1,5 @@
+// @flow
 import React from 'react';
-
-import fire from '../firebase';
 
 import Track from './Track';
 import Login from './Login';
@@ -9,17 +8,26 @@ export default class App extends React.Component {
   state = {
     loading: true,
     authed: false,
+    ref: null,
     user: {
       uid: null,
     },
   };
 
   componentDidMount() {
+    // Listen for login/logout
     this.listenForAuthChange();
   }
 
+  setFireRef() {
+    // Set firebase ref
+    const db = this.props.fire.database();
+    const ref = db.ref('users');
+    this.setState({ ref });
+  }
+
   listenForAuthChange = () => {
-    return fire.auth().onAuthStateChanged(user => {
+    return this.props.fire.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
           loading: false,
@@ -32,9 +40,16 @@ export default class App extends React.Component {
     });
   };
 
+  props: {
+    fire: Object,
+  };
+
   render() {
-    console.log('Render Entry');
-    const { authed, user } = this.state;
-    return authed ? <Track uid={user.uid} /> : <Login />;
+    const { authed, ref, user } = this.state;
+    return authed ? (
+      <Track uid={user.uid} ref={ref} />
+    ) : (
+      <Login fire={this.props.fire} />
+    );
   }
 }

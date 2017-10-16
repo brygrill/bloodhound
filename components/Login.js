@@ -1,24 +1,28 @@
+// @flow
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { FormLabel, FormInput, Button } from 'react-native-elements';
-
-import fire from '../firebase';
 
 export default class App extends React.Component {
   state = {
     user: null,
     password: null,
+    error: false,
   };
 
   submitCredintials = () => {
-    fire.auth().signInWithEmailAndPassword(this.state.user, this.state.password).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode);
-      console.log(errorMessage);
-    });
+    this.props.fire
+      .auth()
+      .signInWithEmailAndPassword(this.state.user, this.state.password)
+      .catch(error => {
+        this.setState({ error });
+      });
     this.setState({ user: null, password: null });
-  }
+  };
+
+  props: {
+    fire: Object,
+  };
 
   render() {
     return (

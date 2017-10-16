@@ -4,10 +4,6 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Location, Permissions } from 'expo';
 
 import GetLocation from './Location';
-import fire from '../firebase';
-
-const db = fire.database();
-const ref = db.ref('users');
 
 export default class App extends React.Component {
   state = {
@@ -29,35 +25,20 @@ export default class App extends React.Component {
     }
 
     const location = await Location.getCurrentPositionAsync({});
-    ref.child(uid).update({ location });
+    this.props.ref.child(uid).update({ location });
     this.setState({ location });
   };
 
   logLocation = coords => {
     console.log('Getting Location!');
     console.log(coords);
-    ref.child(this.props.uid).update({ location: coords });
+    this.props.ref.child(this.props.uid).update({ location: coords });
     this.setState({ location: coords });
   };
 
-  // watchLocation = async uid => {
-  //   const { status } = await Permissions.askAsync(Permissions.LOCATION);
-  //   if (status) {
-  //     this.setState({ trackingAllowed: true });
-  //   }
-
-  //   const location = await Location.watchPositionAsync(
-  //     { timeInterval: 1000 },
-  //     coords => {
-  //       console.log(coords);
-  //       ref.child(uid).update({ location: coords });
-  //       this.setState({ location: coords });
-  //     },
-  //   );
-  // };
-
   props: {
     uid: string,
+    ref: Object,
   };
 
   render() {
@@ -66,6 +47,7 @@ export default class App extends React.Component {
         <Text h1>Tracking Location...</Text>
         <GetLocation
           trackingOn={this.state.trackingOn}
+          ref={this.props.ref}
           uid={this.props.uid}
         />
       </View>
