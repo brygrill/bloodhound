@@ -19,19 +19,12 @@ export default class App extends React.Component {
     this.listenForAuthChange();
   }
 
-  setFireRef() {
-    // Set firebase ref
-    const db = this.props.fire.database();
-    const ref = db.ref('users');
-    this.setState({ ref });
-  }
-
   listenForAuthChange = () => {
     return this.props.fire.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({
           loading: false,
-          authed: true,
+          authed: false,
           user: { uid: user.uid },
         });
       } else {
@@ -45,9 +38,9 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { authed, ref, user } = this.state;
+    const { authed, user } = this.state;
     return authed ? (
-      <Track uid={user.uid} ref={ref} />
+      <Track uid={user.uid} fire={this.props.fire} />
     ) : (
       <Login fire={this.props.fire} />
     );
