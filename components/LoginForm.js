@@ -1,47 +1,37 @@
 // @flow
 // https://snack.expo.io/@bgrill/react-native-login-form
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { FormLabel, FormInput, Button } from 'react-native-elements';
 
-export default class App extends React.Component {
-  state = {
-    user: null,
-    password: null,
-    error: false,
-  };
+// login form built from this tutorial:
+// https://medium.com/react-native-development/easily-build-forms-in-react-native-9006fcd2a73b
+import React, { Component } from 'react';
+import { Text, View, Button, StyleSheet } from 'react-native';
+import t from 'tcomb-form-native';
 
-  submitCredintials = () => {
-    this.props.fire
-      .auth()
-      .signInWithEmailAndPassword(this.state.user, this.state.password)
-      .catch(error => {
-        this.setState({ error });
-      });
-    this.setState({ user: null, password: null });
-  };
+// Form
+const Form = t.form.Form;
 
-  props: {
-    fire: Object,
-  };
+// Form model
+const User = t.struct({
+  email: t.String,
+  password: t.String,
+});
+
+export default class App extends Component {
+  handleSubmit() {
+    console.log(this.loginform);
+  }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text h1>Login</Text>
-        <FormLabel>Email</FormLabel>
-        <FormInput
-          value={this.state.user}
-          onChangeText={user => this.setState({ user })}
-          keyboardType="email-address"
+        <Text>Login</Text>
+        <Form
+          ref={c => {
+            this.loginform = c;
+          }}
+          type={User}
         />
-        <FormLabel>Password</FormLabel>
-        <FormInput
-          value={this.state.password}
-          onChangeText={password => this.setState({ password })}
-          secureTextEntry
-        />
-        <Button title="Submit" onPress={this.submitCredintials} />
+        <Button title="Login" onPress={this.handleSubmit} />Ï
       </View>
     );
   }
@@ -49,10 +39,9 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
+    marginTop: 50,
+    padding: 20,
+    backgroundColor: '#ffffff',
   },
 });
